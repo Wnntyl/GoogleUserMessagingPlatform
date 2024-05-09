@@ -116,48 +116,6 @@ import Foundation
     
     @objc public func deleteOutdatedTCString() -> Bool
     {
-        let settings = UserDefaults.standard
-        
-        // get IABTCF string containing creation timestamp;
-        // fall back to string encoding timestamp 0 if nothing is currently stored
-        let tcString      = settings.string(forKey: "IABTCF_TCString") ?? "AAAAAAA";
-        let base64        = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-        
-        var dateSubstring = "";
-        if( tcString.count >= 7 )
-        {
-            // le substring swift... ils auraient pu faire plus simple quand meme !
-            let start     = tcString.index(tcString.startIndex, offsetBy: 1)
-            let end       = tcString.index(tcString.startIndex, offsetBy: 7)
-            let range     = start..<end
-            dateSubstring = String(tcString[range]);
-        }
-        
-        // interpret date substring as Base64-encoded integer value
-        var timestamp:Int64 = 0;
-        for c in dateSubstring
-        {
-            let value = Int64(indexOf(base64, c));
-            timestamp = timestamp * 64 + value;
-        }
-
-        // timestamp is given is deci-seconds, convert to milliseconds
-        timestamp *= 100;
-
-        // compare with current timestamp to get age in days
-        let now     = Date().millisecondsSince1970;
-        let daysAgo = (now - timestamp) / (1000*60*60*24);
-        
-        // logging debug infos
-        print("GDPRHelper:: deleteOutdatedTCString now = \(now) - timestamp = \(timestamp) - daysAgo = \(daysAgo)")
-        
-        // delete TC string if age is over a year
-        if( daysAgo > 365 )
-        {
-            settings.set("", forKey: "IABTCF_TCString")
-            return true;
-        }
-        
         return false;
     }
     

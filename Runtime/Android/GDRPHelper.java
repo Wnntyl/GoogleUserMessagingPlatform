@@ -123,40 +123,6 @@ public class GDRPHelper
     // this function deletes the IABTCF_TCString if the timestamp is too old (365 days or more)
     public static boolean deleteOutdatedTCString() 
     {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(UnityPlayer.currentActivity);
-
-        // get IABTCF string containing creation timestamp;
-        // fall back to string encoding timestamp 0 if nothing is currently stored
-        String tcString      = prefs.getString("IABTCF_TCString", "AAAAAAA");
-        String base64        = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-        String dateSubstring = tcString.subSequence(1,7).toString();
-
-        //interpret date substring as Base64-encoded integer value
-        long timestamp = 0;
-        for( int i=0; i<dateSubstring.length(); i++ ) 
-        {
-            char c    = dateSubstring.charAt(i);
-            int value = base64.indexOf(c);
-            timestamp = timestamp * 64 + value;
-        }
-
-        // timestamp is given is deci-seconds, convert to milliseconds
-        timestamp *= 100;
-
-        // compare with current timestamp to get age in days
-        long now     = System.currentTimeMillis();
-        long daysAgo = (now - timestamp) / (1000*60*60*24);
-        
-        // logging debug infos
-        Log.i(TAG, TAG+":: deleteOutdatedTCString now = " + now + " - timestamp = " + timestamp + " - daysAgo = " + daysAgo);
-        
-        //delete TC string if age is over a year
-        if( daysAgo > 365 ) 
-        {
-            prefs.edit().remove("IABTCF_TCString").apply();
-            return true;
-        }
-        
         return false;
     }
 }
